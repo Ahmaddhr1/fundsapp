@@ -1,4 +1,4 @@
-package com.ahmad.fundsapp;
+package com.ahmad.fundsapp.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Configuration;
