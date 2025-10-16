@@ -21,10 +21,11 @@ public class Transaction {
 
     private Double amount;
     private String type;
-    private LocalDateTime dateTime;
+    private LocalDateTime createdAt;
+    private String receiverUsername;
 
     public Transaction() {
-        this.dateTime = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() { return id; }
@@ -41,9 +42,11 @@ public class Transaction {
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
 
-    public LocalDateTime getDateTime() { return dateTime; }
-    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime dateTime) { this.createdAt = dateTime; }
 
+    public String getReceiverUsername() { return receiverUsername; }
+    public void setReceiverUsername(String receiverUsername) { this.receiverUsername = receiverUsername; }
 
 
 }
