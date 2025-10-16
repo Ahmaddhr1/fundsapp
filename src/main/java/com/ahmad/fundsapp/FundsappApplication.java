@@ -15,7 +15,7 @@ public class FundsappApplication {
         System.setProperty("spring.datasource.password", dotenv.get("DB_PASSWORD"));
         System.setProperty("spring.datasource.driver-class-name", "org.postgresql.Driver");
 
-        System.setProperty("spring.jpa.hibernate.ddl-auto", "validate"); // or "update"
+        System.setProperty("spring.jpa.hibernate.ddl-auto", "create"); // or "update"
         System.setProperty("spring.jpa.show-sql", "true");
 
         SpringApplication.run(FundsappApplication.class, args);
