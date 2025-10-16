@@ -12,8 +12,24 @@ import java.util.Date;
 
 @Component
 public class Jwt {
-     private final Key SECRET_KEY = Keys.hmacShaKeyFor(System.getenv("JWT_SECRET").getBytes(StandardCharsets.UTF_8));
+
+     private final Key SECRET_KEY;
      private final long EXPIRATION_TIME = 864000000;
+    public Jwt() {
+        Dotenv dotenv = null;
+        try {
+            dotenv = Dotenv.load();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        String secret = (dotenv != null ? dotenv.get("JWT_SECRET") : System.getenv("JWT_SECRET"));
+        if (secret == null) {
+            throw new RuntimeException("JWT_SECRET not set in environment");
+        }
+
+        this.SECRET_KEY = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
   public String generateToken(String username) {
       return Jwts.builder()
