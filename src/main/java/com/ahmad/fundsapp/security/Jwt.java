@@ -20,12 +20,13 @@ public class Jwt {
         try {
             dotenv = Dotenv.load();
         } catch (Exception e) {
-            throw e;
+            // .env not found, fallback to environment variable
         }
 
-        String secret = (dotenv != null ? dotenv.get("JWT_SECRET") : System.getenv("JWT_SECRET"));
-        if (secret == null) {
-            throw new RuntimeException("JWT_SECRET not set in environment");
+        String secret = (dotenv != null) ? dotenv.get("JWT_SECRET") : System.getenv("JWT_SECRET");
+
+        if (secret == null || secret.isBlank()) {
+            throw new RuntimeException("JWT_SECRET environment variable not set!");
         }
 
         this.SECRET_KEY = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));

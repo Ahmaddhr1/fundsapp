@@ -1,6 +1,5 @@
 package com.ahmad.fundsapp;
 
-import io.github.cdimascio.dotenv.DotEnvException;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,27 +7,32 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class FundsappApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
         Dotenv dotenv = null;
         try {
             dotenv = Dotenv.load();
         } catch (Exception e) {
-            throw e;
+            // .env not found, fallback to system environment variables
         }
 
-        System.setProperty("spring.datasource.url",
-                (dotenv != null) ? dotenv.get("DB_URL") : System.getenv("DB_URL"));
-        System.setProperty("spring.datasource.username",
-                (dotenv != null) ? dotenv.get("DB_USERNAME") : System.getenv("DB_USERNAME"));
-        System.setProperty("spring.datasource.password",
-                (dotenv != null) ? dotenv.get("DB_PASSWORD") : System.getenv("DB_PASSWORD"));
+        String dbUrl = (dotenv != null) ? dotenv.get("DB_URL") : System.getenv("DB_URL");
+        String dbUser = (dotenv != null) ? dotenv.get("DB_USERNAME") : System.getenv("DB_USERNAME");
+        String dbPass = (dotenv != null) ? dotenv.get("DB_PASSWORD") : System.getenv("DB_PASSWORD");
+
+        if (dbUrl == null || dbUser == null || dbPass == null) {
+            throw new RuntimeException("Database environment variables not set!");
+        }
+
+        System.setProperty("spring.datasource.url", dbUrl);
+        System.setProperty("spring.datasource.username", dbUser);
+        System.setProperty("spring.datasource.password", dbPass);
         System.setProperty("spring.datasource.driver-class-name", "org.postgresql.Driver");
 
         System.setProperty("spring.jpa.hibernate.ddl-auto", "update");
         System.setProperty("spring.jpa.show-sql", "true");
 
         SpringApplication.run(FundsappApplication.class, args);
-	}
+    }
 
 }
