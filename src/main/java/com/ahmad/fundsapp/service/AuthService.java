@@ -28,36 +28,49 @@ public class AuthService {
     }
 
     public AuthResponse register(String username, String password){
+        try{
+            if(username == null || password == null){
+                throw new IllegalArgumentException("All credentials are required");
+            }
+            if(username.length() <6){
+                throw new IllegalArgumentException("Username must be at least 6 characters!");
+            }
+            if(password.length() <6){
+                throw new IllegalArgumentException("Password must be at least 6 characters!");
+            }
 
-        if(username == null || password == null){
-            throw new IllegalArgumentException("All credentials are required");
+            if(userRepository.existsByUsername(username)){
+                throw new IllegalArgumentException("Username is already in use");
+            }
+            String hashedPassword = passwordEncoder.encode(password);
+
+
+            User user = new User();
+            user.setUsername(username);
+            user.setPassword(hashedPassword);
+            User savedUser=userRepository.save(user);
+
+            Account account = new Account();
+            account.setAccountNumber(UUID.randomUUID().toString().replace("-", "").substring(0, 10));
+            account.setBalance(5000.0);
+            account.setUser(user);
+            accountRepository.save(account);
+
+            String token = jwt.generateToken(savedUser.getUsername());
+            return new AuthResponse(savedUser.getId(), savedUser.getUsername(), token);
+        }catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Something went wrong"+e.getMessage());
         }
-        if(userRepository.existsByUsername(username)){
-            throw new IllegalArgumentException("Username is already in use");
-        }
-        String hashedPassword = passwordEncoder.encode(password);
 
-
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(hashedPassword);
-        User savedUser=userRepository.save(user);
-
-        Account account = new Account();
-        account.setAccountNumber(UUID.randomUUID().toString().replace("-", "").substring(0, 10));
-        account.setBalance(5000.0);
-        account.setUser(user);
-        accountRepository.save(account);
-
-        String token = jwt.generateToken(savedUser.getUsername());
-        return new AuthResponse(savedUser.getId(), savedUser.getUsername(), token);
 
     }
 
     public AuthResponse login(String username, String password) {
         try {
-            if (username == null || password == null) {
-                throw new IllegalArgumentException("All credentials are required");
+            if(username == null || password == null){
+                 throw new IllegalArgumentException("All credentials are required");
             }
             Optional<User> optionalUser = userRepository.findByUsername(username);
             if (optionalUser.isEmpty()) {
@@ -69,8 +82,10 @@ public class AuthService {
             }
             String token = jwt.generateToken(user.getUsername());
             return new AuthResponse(user.getId(),user.getUsername(), token);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid username or password");
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }catch (Exception e) {
+            throw new IllegalArgumentException("Something went wrong"+e.getMessage());
         }
     }
 
