@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY pom.xml .
 COPY src ./src
-
+COPY .env ./
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jdk-alpine
