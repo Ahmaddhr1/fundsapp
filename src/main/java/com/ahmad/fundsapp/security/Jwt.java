@@ -12,9 +12,7 @@ import java.util.Date;
 
 @Component
 public class Jwt {
-
-     Dotenv dotenv = Dotenv.load();
-     private final Key SECRET_KEY = Keys.hmacShaKeyFor(dotenv.get("JWT_SECRET").getBytes(StandardCharsets.UTF_8));
+     private final Key SECRET_KEY = Keys.hmacShaKeyFor(System.getenv("JWT_SECRET").getBytes(StandardCharsets.UTF_8));
      private final long EXPIRATION_TIME = 864000000;
 
   public String generateToken(String username) {
