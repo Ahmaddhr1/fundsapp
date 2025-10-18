@@ -1,7 +1,6 @@
 package com.ahmad.fundsapp.controller;
 
 import com.ahmad.fundsapp.dto.*;
-import com.ahmad.fundsapp.model.Transaction;
 import com.ahmad.fundsapp.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +17,9 @@ public class TransactionController {
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
+
+
+
     @PostMapping("/transfer")
     public ResponseEntity<?> transfer(
             @RequestHeader("Authorization") String authHeader,
@@ -60,13 +62,14 @@ public class TransactionController {
         }
     }
 
-
     @GetMapping("/history")
-    public ResponseEntity<?> getHistory(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> getHistory(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(value = "type", required = false) String typeFilter
+    ) {
         try {
             String token = extractTokenFromHeader(authHeader);
-
-            List<TransactionHistoryResponse> transactions = transactionService.getTransactionHistory(token);
+            List<TransactionHistoryResponse> transactions = transactionService.getTransactionHistory(token, typeFilter);
             return ResponseEntity.ok(transactions);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

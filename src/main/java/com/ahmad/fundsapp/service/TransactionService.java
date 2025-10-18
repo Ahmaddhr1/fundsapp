@@ -109,30 +109,32 @@ public class TransactionService {
         }
     }
 
-    public List<TransactionHistoryResponse> getTransactionHistory(String token) {
-        try{
-            String username = jwt.extractUsername(token);
-            if (!jwt.validateToken(token, username)) {
-                throw new IllegalArgumentException("Invalid or expired token");
-            }
-            Optional<Account> account = accountRepository.findByUser_Username(username);
-            if(!account.isPresent()){
-                throw new IllegalArgumentException("Account not found");
-            }
-            Account account1 = account.get();
-            List<Transaction> transactions= transactionRepository.findBySenderAccountOrReceiverAccount(account1, account1);
-            return transactions.stream()
-                    .map(t -> new TransactionHistoryResponse(
-                            t.getType(),
-                            t.getAmount(),
-                            t.getSenderAccount() != null ? t.getSenderAccount().getUser().getUsername() : null,
-                            t.getReceiverAccount() != null ? t.getReceiverAccount().getUser().getUsername() : t.getReceiverUsername(),
-                            t.getCreatedAt()
-                    )).toList();
-        } catch (IllegalArgumentException e){
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public List<TransactionHistoryResponse> getTransactionHistory(String token, String typeFilter) {
+        String username = jwt.extractUsername(token);
+        if (!jwt.validateToken(token, username)) {
+            throw new IllegalArgumentException("Invalid or expired token");
         }
+
+        Optional<Account> accountOptional = accountRepository.findByUser_Username(username);
+        if (accountOptional.isEmpty()) {
+            throw new IllegalArgumentException("Account not found");
+        }
+
+        Account account = accountOptional.get();
+
+        // Default types: both DEPOSIT and TRANSFER
+        List<String> types = typeFilter == null ? List.of("DEPOSIT", "TRANSFER") : List.of(typeFilter.toUpperCase());
+
+        List<Transaction> transactions = transactionRepository.findTransactionsByAccountAndTypes(account, types);
+
+        return transactions.stream()
+                .map(t -> new TransactionHistoryResponse(
+                        t.getType(),
+                        t.getAmount(),
+                        t.getSenderAccount() != null ? t.getSenderAccount().getUser().getUsername() : null,
+                        t.getReceiverAccount() != null ? t.getReceiverAccount().getUser().getUsername() : t.getReceiverUsername(),
+                        t.getCreatedAt()
+                ))
+                .toList();
     }
 }
