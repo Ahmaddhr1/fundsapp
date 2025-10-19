@@ -21,11 +21,12 @@ JWT_SECRET=....
 ### Note if you clone:
 
 git clone <repo-url>
+cd <directory>
 
-#### Install dependencies
-mvn clean install
 
-5-Run the project and access the routes mention down!
+5-Run the project through the run button or using this command
+"./mvnw spring-boot:run"
+to access the routes mention down
 
 6-Project will run on localhost:8080 so make your requests on postman like this
 GET http://localhost:8080/api/auth/register
