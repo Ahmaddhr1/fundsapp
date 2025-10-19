@@ -11,7 +11,6 @@ import java.util.List;
 public interface TransactionRepo extends JpaRepository<Transaction, Long> {
     @Query("SELECT t FROM Transaction t " +
             "WHERE (t.senderAccount = :account OR t.receiverAccount = :account) " +
-            "AND (:types IS NULL OR t.type IN :types) " +
             "ORDER BY t.createdAt DESC")
     List<Transaction> findTransactionsByAccountAndTypes(
             @Param("account") Account account,
