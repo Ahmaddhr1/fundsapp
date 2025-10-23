@@ -3,9 +3,9 @@
 
 ## Get started
 1-Create a Supabase account
-  a-create a project
-  b-click connect
-  c-get the JDBC url and paste in the dot env file on DB_URL and the other values as well
+a-create a project
+b-click connect
+c-get the JDBC url and paste in the dot env file on DB_URL and the other values as well
 
 
 2-Create a .env file having the following:
@@ -21,11 +21,12 @@ JWT_SECRET=....
 ### Note if you clone:
 
 git clone <repo-url>
+cd <directory>
 
-#### Install dependencies
-mvn clean install
 
-5-Run the project and access the routes mention down!
+5-Run the project through the run button or using this command
+"./mvnw spring-boot:run"
+to access the routes mention down
 
 6-Project will run on localhost:8080 so make your requests on postman like this
 GET http://localhost:8080/api/auth/register
@@ -58,7 +59,7 @@ GET http://localhost:8080/api/auth/register
 - `POST /api/auth/login` - User login (public)  body: username,password
 
 ### Transactions
-- `POST /api/transactions/deposit` - Deposit money (protected) body:amount  headers: Authorization Token 
+- `POST /api/transactions/deposit` - Deposit money (protected) body:amount  headers: Authorization Token
 - `POST /api/transactions/transfer` - Transfer money to another user (protected) body:amount,receiverAccountNumber headers: Authorization Token
 - `GET /api/transactions/history` - Get transaction history (protected) headers: Authorization Token
 
