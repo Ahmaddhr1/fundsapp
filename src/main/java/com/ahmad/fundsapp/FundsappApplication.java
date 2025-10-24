@@ -15,7 +15,7 @@ public class FundsappApplication {
         try {
             dotenv = Dotenv.load();
         } catch (Exception e) {
-
+            throw new RuntimeException("Error loading  dotenv", e);
         }
 
         String dbUrl = (dotenv != null) ? dotenv.get("DB_URL") : System.getenv("DB_URL");
@@ -30,9 +30,6 @@ public class FundsappApplication {
         System.setProperty("spring.datasource.username", dbUser);
         System.setProperty("spring.datasource.password", dbPass);
         System.setProperty("spring.datasource.driver-class-name", "org.postgresql.Driver");
-
-        System.setProperty("spring.jpa.hibernate.ddl-auto", "validate");
-        System.setProperty("spring.jpa.show-sql", "true");
 
         SpringApplication.run(FundsappApplication.class, args);
     }
