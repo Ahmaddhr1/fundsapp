@@ -15,7 +15,7 @@ public class FundsappApplication {
         try {
             dotenv = Dotenv.load();
         } catch (Exception e) {
-            throw new RuntimeException("Error loading  dotenv", e);
+
         }
 
         String dbUrl = (dotenv != null) ? dotenv.get("DB_URL") : System.getenv("DB_URL");
