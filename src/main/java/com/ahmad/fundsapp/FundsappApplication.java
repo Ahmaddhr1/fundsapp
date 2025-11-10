@@ -10,27 +10,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class FundsappApplication {
 
     public static void main(String[] args) {
+        Dotenv dotenv = Dotenv.load();
 
-        Dotenv dotenv = null;
-        try {
-            dotenv = Dotenv.load();
-        } catch (Exception e) {
-
-        }
-
-        String dbUrl = (dotenv != null) ? dotenv.get("DB_URL") : System.getenv("DB_URL");
-        String dbUser = (dotenv != null) ? dotenv.get("DB_USERNAME") : System.getenv("DB_USERNAME");
-        String dbPass = (dotenv != null) ? dotenv.get("DB_PASSWORD") : System.getenv("DB_PASSWORD");
-
-        if (dbUrl == null || dbUser == null || dbPass == null) {
-            throw new RuntimeException("Database environment variables not set!");
-        }
-
-        System.setProperty("spring.datasource.url", dbUrl);
-        System.setProperty("spring.datasource.username", dbUser);
-        System.setProperty("spring.datasource.password", dbPass);
-        System.setProperty("spring.datasource.driver-class-name", "org.postgresql.Driver");
-
+        System.setProperty("spring.datasource.url", dotenv.get("DB_URL"));
+        System.setProperty("spring.datasource.username", dotenv.get("DB_USERNAME"));
+        System.setProperty("spring.datasource.password", dotenv.get("DB_PASSWORD"));
         SpringApplication.run(FundsappApplication.class, args);
     }
 
