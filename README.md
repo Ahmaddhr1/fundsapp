@@ -65,3 +65,4 @@ GET http://localhost:8080/api/auth/register
 
 ### User
 - `GET /api/users/get` - Get user's account data (protected) headers: Authorization Token
+- 
